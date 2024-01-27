@@ -17,6 +17,15 @@ public class PlayerController : MonoBehaviour {
         down
     };
 
+    enum PlayerAction {
+        moveUp,
+        moveDown,
+        moveLeft,
+        moveRight,
+        grab,
+        squeak
+    }
+
     FacingDir currentFacingDir;
     Dictionary<FacingDir, Vector2> dirsToVectors;
     Draggable draggedItem;
@@ -29,6 +38,12 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     Canvas HUDCanvas;
 
+    [SerializeField]
+    bool isPlayer1;
+
+    Dictionary<PlayerAction, KeyCode> playerActionsToKeys;
+
+
     void Awake() {
         draggablesInRange = new List<Draggable>();
         currentFacingDir = FacingDir.down;
@@ -40,25 +55,40 @@ public class PlayerController : MonoBehaviour {
             { FacingDir.up, Vector2.up},
             { FacingDir.down, Vector2.down },
         };
+        playerActionsToKeys = new Dictionary<PlayerAction, KeyCode>() {
+            { PlayerAction.moveUp, isPlayer1 ? KeyCode.W : KeyCode.UpArrow },
+            { PlayerAction.moveDown, isPlayer1 ? KeyCode.S : KeyCode.DownArrow },
+            { PlayerAction.moveLeft, isPlayer1 ? KeyCode.A : KeyCode.LeftArrow},
+            { PlayerAction.moveRight, isPlayer1 ? KeyCode.D : KeyCode.RightArrow},
+            { PlayerAction.grab, isPlayer1 ? KeyCode.G : KeyCode.Keypad1 },
+            { PlayerAction.squeak, isPlayer1 ? KeyCode.H : KeyCode.Keypad0 },
+        };
+
     }
 
     void FixedUpdate() {
         handleMovement();
+        //handleDragging();
+        //handleSqueak();
+    }
+
+    private void Update() {
         handleDragging();
+        handleSqueak();
     }
 
     void handleMovement() {
         Vector2 movementDir = new Vector3();
-        if (Input.GetKey(KeyCode.W)) {
+        if (Input.GetKey(playerActionsToKeys[PlayerAction.moveUp])) {
             movementDir.y += 1;
         }
-        if (Input.GetKey(KeyCode.S)) {
+        if (Input.GetKey(playerActionsToKeys[PlayerAction.moveDown])) {
             movementDir.y -= 1;
         }
-        if (Input.GetKey(KeyCode.D)) {
+        if (Input.GetKey(playerActionsToKeys[PlayerAction.moveRight])) {
             movementDir.x += 1;
         }
-        if (Input.GetKey(KeyCode.A)) {
+        if (Input.GetKey(playerActionsToKeys[PlayerAction.moveLeft])) {
             movementDir.x -= 1;
         }
         Vector3 movementVector = movementDir * speed * Time.fixedDeltaTime;
@@ -103,13 +133,23 @@ public class PlayerController : MonoBehaviour {
     }
 
     void handleDragging() {
-        if (Input.GetKeyUp(KeyCode.F)) {
+        if (Input.GetKeyUp(playerActionsToKeys[PlayerAction.grab])) {
             if (draggedItem != null) {
                 stopDragging();
             } else {
                 enactDragInDir();
             }
         }
+    }
+
+    void handleSqueak() {
+        if (Input.GetKeyUp(playerActionsToKeys[PlayerAction.squeak]) && draggedItem == null) {
+            squeak();
+        }
+    }
+
+    void squeak() {
+        Debug.Log("squeak!");
     }
 
     void enactDragInDir() {
