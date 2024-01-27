@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour {
     CircleCollider2D playerCollider;
 
     [SerializeField]
-    GameObject draggableTooltip;
+    DragTooltip draggableTooltip;
 
     [SerializeField]
     Canvas HUDCanvas;
@@ -68,8 +68,6 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate() {
         handleMovement();
-        //handleDragging();
-        //handleSqueak();
     }
 
     private void Update() {
@@ -159,7 +157,7 @@ public class PlayerController : MonoBehaviour {
         }
         draggedItem = bestDraggable;
         bestDraggable.startDrag();
-        draggableTooltip.SetActive(false);
+        draggableTooltip.deactivate();
         dragDistance = playerCollider.radius + draggedItem.GetComponent<CircleCollider2D>().radius;
     }
 
@@ -198,6 +196,15 @@ public class PlayerController : MonoBehaviour {
         showTooltipIfNeeded();
     }
 
+    public Draggable getDraggedItem() {
+        return draggedItem;
+    }
+
+    public void dropIt() {
+        draggedItem.endDrag();
+        draggedItem = null;
+    }
+
     void showTooltipIfNeeded() {
         Draggable bestDraggable = getTopDraggable();
         if (bestDraggable != null) {
@@ -205,16 +212,16 @@ public class PlayerController : MonoBehaviour {
             Vector3 screenPoint = Camera.main.WorldToScreenPoint(bestDraggable.transform.position) / HUDCanvas.scaleFactor;
             screenPoint = new Vector3(screenPoint.x - (tooltipRT.sizeDelta.x / 2), (screenPoint.y - tooltipRT.sizeDelta.y / 2), screenPoint.z);
             tooltipRT.anchoredPosition = screenPoint;
-            draggableTooltip.SetActive(true);
+            draggableTooltip.activate();
         } else {
-            draggableTooltip.SetActive(false);
+            draggableTooltip.deactivate();
         }
 
     }
 
     public void removePickupFromRange(Draggable draggableObj) {
         draggablesInRange.Remove(draggableObj);
-        draggableTooltip.SetActive(false);
+        draggableTooltip.deactivate();
         showTooltipIfNeeded();
     }
 

@@ -1,23 +1,29 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class DragTooltip : MonoBehaviour, IPoolableProp {
+public class DragTooltip : MonoBehaviour {
     public bool isAvailable { get; set; }
 
     public const string positionKey = "position";
 
     [SerializeField]
-    TextMeshPro tmPropRenderer;
+    TextMeshProUGUI text;
 
-    public void activate(Dictionary<string, object> args) {
-        isAvailable = false;
-        gameObject.SetActive(true);
-        transform.position = (Vector3)args[positionKey];
+    [SerializeField]
+    Image background;
+
+    private void Start() {
+        deactivate();
+    }
+
+    public void activate() {
+        text.enabled = true;
+        background.enabled = true;
     }
 
     public void deactivate() {
-        gameObject.SetActive(false);
-        isAvailable = true;
+        text.enabled = false;
+        background.enabled = false;
     }
 }

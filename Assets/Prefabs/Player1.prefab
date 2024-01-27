@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 3106455491895906196}
   m_Layer: 8
   m_Name: Player1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -131,9 +131,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ba651f833139846b3445061e5773dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 8
   draggableTooltip: {fileID: 0}
   HUDCanvas: {fileID: 0}
+  isPlayer1: 0
 --- !u!50 &2736711143212077597
 Rigidbody2D:
   serializedVersion: 4
