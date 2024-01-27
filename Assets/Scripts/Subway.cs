@@ -22,15 +22,28 @@ public class Subway : MonoBehaviour, IPoolableProp {
 
     Vector3 endingPos;
     float movementTimer;
+    float passengerSpawnTimer;
     Action movementCompleteCallback;
+
+    int minPassengers = 3;
+    int maxPassengers = 10;
+    float passengerSpawnRate;
+
+    [SerializeField]
+    List<Vector3> localSpawnPositions;
+
     void Awake() {
         movementCoroutine = null;
         movementCompleteCallback = null;
         enabled = false;
+        passengerSpawnRate = stationaryTime / (maxPassengers + 1);
     }
 
     private void FixedUpdate() {
         movementTimer += Time.fixedDeltaTime;
+        if (passengerSpawnTimer > -1) {
+            passengerSpawnTimer += Time.fixedDeltaTime;
+        }
     }
 
     public void activate(Dictionary<string, object> args) {
@@ -56,8 +69,19 @@ public class Subway : MonoBehaviour, IPoolableProp {
             yield return fixedUpdateDelay;
         }
         movementTimer = 0;
+        passengerSpawnTimer = 0;
+        int numPassengers = UnityEngine.Random.Range(minPassengers, maxPassengers);
+        int spawnedPassengerCount = 0;
         while (movementTimer < stationaryTime) {
-            yield return null;
+            if (spawnedPassengerCount >= numPassengers) {
+                passengerSpawnTimer = -1;
+            }
+            if (passengerSpawnTimer > passengerSpawnRate) {
+                passengerSpawnTimer = 0;
+                spawnedPassengerCount++;
+                spawnPassenger();
+            }
+            yield return fixedUpdateDelay;
         }
         movementTimer = 0;
         while (movementTimer < totalMovementTime) {
@@ -76,4 +100,15 @@ public class Subway : MonoBehaviour, IPoolableProp {
             movementCompleteCallback();
         }
     }
+
+    void spawnPassenger() {
+        int spawnIdx = UnityEngine.Random.Range(0, localSpawnPositions.Count);
+        Vector3 spawnPos = transform.TransformPoint(localSpawnPositions[spawnIdx]);
+        IPoolableProp spawnedPassenger = PropObjectPool.getFirstAvailableProp(Passenger.passengerPrefabName);
+        spawnedPassenger.activate(new Dictionary<string, object>() {
+            { Passenger.spawnPosKey, spawnPos },
+            { Passenger.exitDirKey, Quaternion.AngleAxis(90, Vector3.forward) * dir }
+        });
+    }
+
 }

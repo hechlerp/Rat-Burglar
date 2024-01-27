@@ -16,7 +16,10 @@ public class SubwayManager : MonoBehaviour {
     [SerializeField]
     Subway subwayPrefab;
 
-    List<Subway> subways;
+    [SerializeField]
+    Passenger passengerPrefab;
+
+    //List<Subway> subways;
     float subwayTimer;
     float subwayInterval;
 
@@ -31,7 +34,7 @@ public class SubwayManager : MonoBehaviour {
     List<Track> tracks;
 
     private void Awake() {
-        subways = new List<Subway>();
+        //subways = new List<Subway>();
         subwayInterval = 0;
         subwayTimer = -1;
         enabled = false;
@@ -41,6 +44,7 @@ public class SubwayManager : MonoBehaviour {
 
     public void initialize(float subwayInterval) {
         PropObjectPool.addPropPrefabToStore(subwayPropName, subwayPrefab.gameObject);
+        PropObjectPool.addPropPrefabToStore(Passenger.passengerPrefabName, passengerPrefab.gameObject);
         enabled = true;
         this.subwayInterval = subwayInterval;
         subwayTimer = subwayInterval;
