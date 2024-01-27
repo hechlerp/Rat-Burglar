@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour {
@@ -15,6 +16,9 @@ public class LevelManager : MonoBehaviour {
         }
     }
 
+    [SerializeField]
+    SubwayManager subwayManager;
+
     float levelTimer;
 
     [SerializeField]
@@ -26,30 +30,74 @@ public class LevelManager : MonoBehaviour {
     float subwayInterval;
 
     bool isRunning;
+    bool isInitialized = false;
+
+    List<PlayerController> players;
+    List<Vector3> initialPlayerPositions;
+
+    [SerializeField]
+    Pizza pizza;
+
+    Vector3 initialPizzaPos;
 
     void initialize() {
+        if (isInitialized) {
+            return;
+        }
         levelTimer = maxLevelTime;
         subwayTimer = subwayInterval;
         isRunning = true;
+        subwayManager.initialize(subwayInterval);
+        GameObject[] playerGOs = GameObject.FindGameObjectsWithTag("Player");
+        initialPlayerPositions = new List<Vector3>();
+        players = new List<PlayerController>();
+        foreach (GameObject player in playerGOs) {
+            players.Add(player.GetComponent<PlayerController>());
+            initialPlayerPositions.Add(new Vector3(player.transform.position.x, player.transform.position.y));
+        }
+        initialPizzaPos = new Vector3(pizza.transform.position.x, pizza.transform.position.y);
+        isInitialized = true;
     }
 
-    // Start is called before the first frame update
     void Start() {
-
+        initialize();
     }
 
-    // Update is called once per frame
     void FixedUpdate() {
+        if (!isRunning) {
+            return;
+        }
+        decrementLevelTimer();
+    }
 
+    void decrementLevelTimer() {
+        levelTimer -= Time.fixedDeltaTime;
+        if (levelTimer <= 0) {
+            loseGame();
+        }
     }
 
     public static void winGame() {
         instance.isRunning = false;
         instance.enabled = false;
+        Debug.Log("players won!");
     }
 
     public static void loseGame() {
         instance.isRunning = false;
         instance.enabled = false;
+        Debug.Log("players lost!");
+    }
+
+    public static void resetPlayersAndPizza() {
+        Debug.Log("resetting");
+        for (int i = 0; i < instance.players.Count; i++) {
+            instance.players[i].transform.position = instance.initialPlayerPositions[i];
+        }
+        instance.pizza.transform.position = instance.initialPizzaPos;
+    }
+
+    public static List<PlayerController> getPlayers() {
+        return instance.players;
     }
 }
