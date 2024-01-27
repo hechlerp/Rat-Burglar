@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UImanager : MonoBehaviour
 {
@@ -21,5 +22,14 @@ public class UImanager : MonoBehaviour
         currentHelpMenuCheck = !currentHelpMenuCheck;
         Time.timeScale = currentHelpMenuCheck? 0: 1 ;
         helpMenu.SetActive(currentHelpMenuCheck);
+    }
+
+    public void PressRestart() { 
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+
+    public void PressBackToMenu() { 
+        // SceneManager.LoadScene();
     }
 }
