@@ -23,6 +23,12 @@ public class PlayerController : MonoBehaviour {
     float dragDistance;
     CircleCollider2D playerCollider;
 
+    [SerializeField]
+    GameObject draggableTooltip;
+
+    [SerializeField]
+    Canvas HUDCanvas;
+
     void Awake() {
         draggablesInRange = new List<Draggable>();
         currentFacingDir = FacingDir.down;
@@ -61,7 +67,11 @@ public class PlayerController : MonoBehaviour {
         }
         if (movementVector != Vector3.zero) {
             transform.position += movementVector;
+            FacingDir prevDir = currentFacingDir;
             currentFacingDir = getCurrentDir(movementDir);
+            if (currentFacingDir != prevDir) {
+                showTooltipIfNeeded();
+            }
             if (draggedItem != null) {
                 Vector3 dragOffset = movementDir * dragDistance;
                 if (movementDir.x != 0 && movementDir.y != 0) {
@@ -108,6 +118,8 @@ public class PlayerController : MonoBehaviour {
             return;
         }
         draggedItem = bestDraggable;
+        bestDraggable.startDrag();
+        draggableTooltip.SetActive(false);
         dragDistance = playerCollider.radius + draggedItem.GetComponent<CircleCollider2D>().radius;
     }
 
@@ -121,7 +133,7 @@ public class PlayerController : MonoBehaviour {
             })
             .Where(draggableTuple => {
                 (Draggable draggable, float dotProduct) = draggableTuple;
-                return dotProduct > 0;
+                return draggable.isAvailable && dotProduct > 0;
             })
             .ToList();
         if (eligibleDraggables.Count == 0) {
@@ -136,15 +148,34 @@ public class PlayerController : MonoBehaviour {
     }
 
     void stopDragging() {
+        draggedItem.endDrag();
         draggedItem = null;
+        showTooltipIfNeeded();
     }
 
     public void addPickupToRange(Draggable draggableObj) {
         draggablesInRange.Add(draggableObj);
+        showTooltipIfNeeded();
+    }
+
+    void showTooltipIfNeeded() {
+        Draggable bestDraggable = getTopDraggable();
+        if (bestDraggable != null) {
+            RectTransform tooltipRT = (draggableTooltip.transform as RectTransform);
+            Vector3 screenPoint = Camera.main.WorldToScreenPoint(bestDraggable.transform.position) / HUDCanvas.scaleFactor;
+            screenPoint = new Vector3(screenPoint.x - (tooltipRT.sizeDelta.x / 2), (screenPoint.y - tooltipRT.sizeDelta.y / 2), screenPoint.z);
+            tooltipRT.anchoredPosition = screenPoint;
+            draggableTooltip.SetActive(true);
+        } else {
+            draggableTooltip.SetActive(false);
+        }
+
     }
 
     public void removePickupFromRange(Draggable draggableObj) {
         draggablesInRange.Remove(draggableObj);
+        draggableTooltip.SetActive(false);
+        showTooltipIfNeeded();
     }
 
 
