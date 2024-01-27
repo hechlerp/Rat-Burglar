@@ -11,10 +11,10 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Obstacle
+  - Wall
+  - Character
+  - Pickup
   - 
   - 
   - 
@@ -40,4 +40,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Obstacle
+    uniqueID: 4029256359
+    locked: 0
+  - name: Character
+    uniqueID: 675023807
     locked: 0
