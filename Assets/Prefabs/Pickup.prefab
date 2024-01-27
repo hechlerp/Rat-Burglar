@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25a9d3ae040f6ff459b9f5bf6c8df173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  draggableTooltipPrefab: {fileID: 9185558784480441797, guid: e8c0fd55c98fc434ba4787f30fb1fbc2, type: 3}
+  draggableTooltipPrefabName: dragTooltip
 --- !u!58 &906303297640982238
 CircleCollider2D:
   m_ObjectHideFlags: 0
