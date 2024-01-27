@@ -90,7 +90,6 @@ public class LevelManager : MonoBehaviour {
     }
 
     public static void resetPlayersAndPizza() {
-        Debug.Log("resetting");
         for (int i = 0; i < instance.players.Count; i++) {
             instance.players[i].transform.position = instance.initialPlayerPositions[i];
         }
