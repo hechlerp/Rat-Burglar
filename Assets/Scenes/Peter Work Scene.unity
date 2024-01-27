@@ -396,6 +396,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2686440804010695157, guid: 065d47ecda5c0d046bb8bc45fcc8da85, type: 3}
+      propertyPath: HUDCanvas
+      value: 
+      objectReference: {fileID: 8338874512211647635}
+    - target: {fileID: 2686440804010695157, guid: 065d47ecda5c0d046bb8bc45fcc8da85, type: 3}
+      propertyPath: draggableTooltip
+      value: 
+      objectReference: {fileID: 8338874512211647636}
     - target: {fileID: 8023374807829893320, guid: 065d47ecda5c0d046bb8bc45fcc8da85, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -543,3 +551,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0fa5ea331cb99364db4f2d8a5d7ac601, type: 3}
+--- !u!223 &8338874512211647635 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 539105673254034892, guid: 0fa5ea331cb99364db4f2d8a5d7ac601, type: 3}
+  m_PrefabInstance: {fileID: 8338874512211647634}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8338874512211647636 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5947606184790153630, guid: 0fa5ea331cb99364db4f2d8a5d7ac601, type: 3}
+  m_PrefabInstance: {fileID: 8338874512211647634}
+  m_PrefabAsset: {fileID: 0}
