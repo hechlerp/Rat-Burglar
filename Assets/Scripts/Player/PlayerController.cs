@@ -71,8 +71,6 @@ public class PlayerController : MonoBehaviour {
     float currentSpeed;
     float dragSlowFactor = .5f;
 
-
-
     void Awake() {
         draggablesInRange = new List<Draggable>();
         currentFacingDir = FacingDir.down;
@@ -94,7 +92,7 @@ public class PlayerController : MonoBehaviour {
         };
         currentSpeed = speed;
 
-        setPlayerSprites(isPlayer1 ? "Tubs" : "Tibs");
+        setPlayerSprites();
     }
 
     void FixedUpdate() {
@@ -122,9 +120,9 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    void setPlayerSprites(string playerName) {
-        player1UpWalkSprites = loadSprites("Sprites/" + playerName + "-Walking-Front");
-        player2UpWalkSprites = loadSprites("Sprites/" + playerName + "-Walking-Front");
+    void setPlayerSprites() {
+        player1UpWalkSprites = loadSprites("Sprites/Tubs-Walking-Front");
+        player2UpWalkSprites = loadSprites("Sprites/Tibs-Walking-Front");
     }
 
 
@@ -135,11 +133,23 @@ public class PlayerController : MonoBehaviour {
 
     void updatePlayerSprite()
     {
-        Sprite[] walkSprites = isPlayer1 ? (currentFacingDir == FacingDir.up ? player1UpWalkSprites : player1DownWalkSprites)
-                                         : (currentFacingDir == FacingDir.up ? player2UpWalkSprites : player2DownWalkSprites);
+        Sprite[] walkSprites = new Sprite[totalFrames];
+        if (isPlayer1)
+        {
+            if (currentFacingDir == FacingDir.up || currentFacingDir == FacingDir.up)
+            {
+                walkSprites = player1UpWalkSprites;
+            }
+                               
+        }else
+        {
+            if (currentFacingDir == FacingDir.up || currentFacingDir == FacingDir.up)
+            {
+                walkSprites = player2UpWalkSprites;
+            }
+        }
         if (currentFrame < walkSprites.Length) {
             GetComponent<SpriteRenderer>().sprite = walkSprites[currentFrame];
-
         }
     }
 
@@ -159,7 +169,12 @@ public class PlayerController : MonoBehaviour {
         }
         Vector3 movementVector = movementDir * currentSpeed * Time.fixedDeltaTime;
         if (movementDir.x != 0 && movementDir.y != 0) {
+            isWalking = true;
             movementVector /= rootTwo;
+        }
+        else
+        {
+            isWalking = false;
         }
         if (movementVector != Vector3.zero) {
             transform.position += movementVector;
