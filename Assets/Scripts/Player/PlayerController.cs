@@ -43,6 +43,17 @@ public class PlayerController : MonoBehaviour {
 
     Dictionary<PlayerAction, KeyCode> playerActionsToKeys;
 
+    [SerializeField]
+    float squeakRadius;
+
+    [SerializeField]
+    float squeakCooldown;
+    float squeakTimer;
+
+    [SerializeField]
+    ParticleSystem squeakPS;
+
+
 
     void Awake() {
         draggablesInRange = new List<Draggable>();
@@ -68,6 +79,7 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate() {
         handleMovement();
+        handleSqueakCooldown();
     }
 
     private void Update() {
@@ -110,6 +122,15 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    void handleSqueakCooldown() {
+        if (squeakTimer > 0) {
+            squeakTimer -= Time.fixedDeltaTime;
+            if (squeakTimer < 0) {
+                squeakTimer = 0;
+            }
+        }
+    }
+
     FacingDir getCurrentDir(Vector3 movementDir) {
         if (
             (currentFacingDir == FacingDir.left && movementDir.x < 0) ||
@@ -141,13 +162,19 @@ public class PlayerController : MonoBehaviour {
     }
 
     void handleSqueak() {
-        if (Input.GetKeyUp(playerActionsToKeys[PlayerAction.squeak]) && draggedItem == null) {
+        if (Input.GetKeyUp(playerActionsToKeys[PlayerAction.squeak]) && draggedItem == null && squeakTimer == 0) {
             squeak();
         }
     }
 
     void squeak() {
-        Debug.Log("squeak!");
+        squeakPS.Play();
+        squeakTimer = squeakCooldown;
+        Collider2D[] passengerCols = Physics2D.OverlapCircleAll(transform.position, squeakRadius, LayerMask.GetMask("Person"));
+        foreach (Collider2D col in passengerCols) {
+            Passenger passenger = col.GetComponent<Passenger>();
+            passenger.panic(transform.position);
+        }
     }
 
     void enactDragInDir() {
