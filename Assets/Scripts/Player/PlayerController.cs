@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -7,6 +8,22 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField]
     float speed = 1f;
+
+    Sprite[] player1UpWalkSprites;
+    Sprite[] player1DownWalkSprites;
+    Sprite[] player1LeftWalkSprites;
+    Sprite[] player1RightWalkSprites;
+
+    Sprite[] player1UpDragSprites;
+    Sprite[] player1DownDragSprites;
+    Sprite[] player1LeftDragSprites;
+    Sprite[] player1RightDragSprites;
+
+    int currentFrame = 0;
+    int totalFrames = 4;
+
+    float frameTime = 0.1f;
+    float timeElapsed = 0f;
 
     List<Draggable> draggablesInRange;
 
@@ -55,6 +72,10 @@ public class PlayerController : MonoBehaviour {
 
     float currentSpeed;
     float dragSlowFactor = .5f;
+
+    [SerializeField]
+    SpriteRenderer mainSprite;
+
     private bool isWalking;
 
 
@@ -79,6 +100,8 @@ public class PlayerController : MonoBehaviour {
         };
         currentSpeed = speed;
 
+        setPlayerSprites();
+        setPlayerDragSprites();
     }
 
     void FixedUpdate() {
@@ -89,6 +112,69 @@ public class PlayerController : MonoBehaviour {
     private void Update() {
         handleDragging();
         handleSqueak();
+        handleWalkAnimation();
+    }
+
+    void handleWalkAnimation()
+    {
+        if(isWalking)
+        {
+            timeElapsed += Time.deltaTime;
+            if(timeElapsed >= frameTime)
+            {
+                timeElapsed = 0f;
+                currentFrame = (currentFrame + 1) % totalFrames;
+                updatePlayerSprite();
+            }
+        }
+    }
+
+    void setPlayerSprites() {
+        string name = isPlayer1 ? "Tibs" : "Tubs";
+        player1UpWalkSprites = loadSprites("Sprites/" + name + "-Walking-Front");
+        player1DownWalkSprites = loadSprites("Sprites/" + name + "-Walking-Back");
+        player1LeftWalkSprites = loadSprites("Sprites/" + name + "-Walking-Left");
+        player1RightWalkSprites = loadSprites("Sprites/" + name + "-Walking-Right");
+    }
+
+    void setPlayerDragSprites()
+    {
+        string name = isPlayer1 ? "Tibs" : "Tubs";
+        player1UpDragSprites = loadSprites("Sprites/" + name + "-Dragging-Front");
+        player1DownDragSprites = loadSprites("Sprites/" + name + "-Dragging-Back");
+        player1LeftDragSprites = loadSprites("Sprites/" + name + "-Dragging-Right");
+        player1RightDragSprites = loadSprites("Sprites/" + name + "-Dragging-Left");
+    }
+
+
+    Sprite[] loadSprites(string path) {
+        Sprite[] sprites = Resources.LoadAll<Sprite>(path + "-SS");
+        return sprites;
+    }
+
+    void updatePlayerSprite()
+    {
+        Sprite[] walkSprites = new Sprite[totalFrames];
+       
+        if (currentFacingDir == FacingDir.up)
+        {
+            walkSprites = draggedItem == null ? player1UpDragSprites : player1UpWalkSprites;
+        }
+        if (currentFacingDir == FacingDir.down) {
+            walkSprites = draggedItem == null ? player1DownDragSprites : player1DownWalkSprites;
+        }
+        if (currentFacingDir == FacingDir.left)
+        {
+            walkSprites = draggedItem == null ? player1LeftDragSprites : player1LeftWalkSprites;
+        }
+        if (currentFacingDir == FacingDir.right)
+        {
+            walkSprites = draggedItem == null ? player1RightDragSprites : player1RightWalkSprites;
+        }
+
+        if (currentFrame < walkSprites.Length) {
+            mainSprite.sprite = walkSprites[currentFrame];
+        }
         handleActionAudio();
     }
 
@@ -110,7 +196,12 @@ public class PlayerController : MonoBehaviour {
         }
         Vector3 movementVector = movementDir * currentSpeed * Time.fixedDeltaTime;
         if (movementDir.x != 0 && movementDir.y != 0) {
+            isWalking = true;
             movementVector /= rootTwo;
+        }
+        else
+        {
+            isWalking = false;
         }
         if (movementVector != Vector3.zero) {
             transform.position += movementVector;
