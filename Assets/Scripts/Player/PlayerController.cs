@@ -125,7 +125,7 @@ public class PlayerController : MonoBehaviour {
 
 
     Sprite[] loadSprites(string path) {
-        Sprite[] sprites = new Sprite[totalFrames];
+        Sprite[] sprites = Resources.LoadAll<Sprite>(path + "-SS");
         for (int i = 0; i < totalFrames; i++)
         {
             string formattedName = path + "-SS_" + i;
@@ -144,6 +144,7 @@ public class PlayerController : MonoBehaviour {
                                          : (currentFacingDir == FacingDir.up ? player2UpWalkSprites : player2DownWalkSprites);
         if (currentFrame < walkSprites.Length) {
             GetComponent<SpriteRenderer>().sprite = walkSprites[currentFrame];
+
         }
     }
 
