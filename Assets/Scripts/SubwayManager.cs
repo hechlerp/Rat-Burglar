@@ -90,28 +90,30 @@ public class SubwayManager : MonoBehaviour {
     }
 
     public void spawnSubway() {
-        List<Track> availableTracks = tracks.Where(track => track.isAvailable).ToList();
-        if (availableTracks.Count == 0) {
+        float totalWeighting = 1;
+        List<Track> availableTracks = tracks.Where(track => {
+            if (!track.isAvailable) {
+                totalWeighting -= track.selectionWeight;
+            }
+            return track.isAvailable;
+        }).ToList();
+        if (availableTracks.Count == 0 || totalWeighting == 0) {
             return;
         }
         List<float> adjustedWeights = availableTracks.Select(track => {
-            return track.selectionWeight * (tracks.Count / availableTracks.Count);
+            return track.selectionWeight / totalWeighting;
         }).ToList();
         float randomVal = UnityEngine.Random.value;
 
-        int trackIdx = -1;
+        int trackIdx = 0;
         float weightTotal = 0;
-        Debug.Log(randomVal);
         for (int i = 0; i < adjustedWeights.Count; i++) {
             weightTotal += adjustedWeights[i];
-            Debug.Log(weightTotal);
-            Debug.Log(randomVal <= weightTotal);
             if (randomVal <= weightTotal) {
                 trackIdx = i;
                 break;
             }
         }
-        Debug.Log(trackIdx);
         int trackIdxToUse = availableTracks[trackIdx].idx;
         Track track = tracks[trackIdxToUse];
         track.isAvailable = false;
@@ -121,8 +123,9 @@ public class SubwayManager : MonoBehaviour {
         subway.activate(new Dictionary<string, object> {
             { Subway.dirKey, track.dir },
             { trackPosKey, track.pos },
-            { Subway.movementCompleteCallbackKey, moveCompleteAction }
-
+            { Subway.movementCompleteCallbackKey, moveCompleteAction },
+            { Subway.isExpressKey, trackIdxToUse == expressTrackIdx },
+            { Subway.trackGoKey, track.rails.transform.GetChild(0).gameObject }
         });
     }
 

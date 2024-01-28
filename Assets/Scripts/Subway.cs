@@ -35,11 +35,22 @@ public class Subway : MonoBehaviour, IPoolableProp {
     [SerializeField]
     float dismebarkYVariance;
 
+    float railShakeMagnitude = .5f;
+    float railShakeDur = 2f;
+    GameObject trackGO;
+    public const string trackGoKey = "trackGO";
+
+
+    public const string isExpressKey = "isExpress";
+    bool isExpress;
+
     void Awake() {
         movementCoroutine = null;
         movementCompleteCallback = null;
         enabled = false;
         passengerSpawnRate = stationaryTime / (maxPassengers + 1);
+        isExpress = false;
+        trackGO = null;
     }
 
     private void FixedUpdate() {
@@ -58,14 +69,34 @@ public class Subway : MonoBehaviour, IPoolableProp {
         gameObject.SetActive(true);
         enabled = true;
         movementTimer = 0;
+        trackGO = (GameObject)args[trackGoKey];
         movementCoroutine = StartCoroutine(moveIntoStation());
+        isExpress = (bool)args[isExpressKey];
     }
 
     IEnumerator moveIntoStation() {
+        WaitForFixedUpdate fixedUpdateDelay = new WaitForFixedUpdate();
+        bool lastVibratedLeft = true;
+        while (movementTimer < railShakeDur) {
+            // shake
+            trackGO.transform.localPosition = (lastVibratedLeft ? Vector3.right : Vector3.left) * railShakeMagnitude;
+            lastVibratedLeft = !lastVibratedLeft;
+            yield return fixedUpdateDelay;
+        }
+        trackGO.transform.localPosition = Vector3.zero;
+
+        movementTimer = 0;
+        if (isExpress) {
+            float totalTime = (offsetMagnitude * 2) / vInitial;
+            while (movementTimer < totalTime) {
+                transform.position += dir * vInitial * Time.fixedDeltaTime;
+                yield return fixedUpdateDelay;
+            }
+            yield break;
+        }
         float totalMovementTime = offsetMagnitude / (vInitial / 2);
         float accel = vInitial / totalMovementTime;
         float velocity = vInitial;
-        WaitForFixedUpdate fixedUpdateDelay = new WaitForFixedUpdate();
         while (movementTimer < totalMovementTime) {
             transform.position += dir * velocity * Time.fixedDeltaTime;
             velocity -= accel * Time.fixedDeltaTime;
@@ -111,7 +142,7 @@ public class Subway : MonoBehaviour, IPoolableProp {
         IPoolableProp spawnedPassenger = PropObjectPool.getFirstAvailableProp(Passenger.passengerPrefabName);
         spawnedPassenger.activate(new Dictionary<string, object>() {
             { Passenger.spawnPosKey, spawnPos },
-            { Passenger.exitDirKey, Quaternion.AngleAxis(90, Vector3.forward) * dir }
+            { Passenger.exitDirKey, Quaternion.AngleAxis(-90, Vector3.forward) * dir }
         });
     }
 
