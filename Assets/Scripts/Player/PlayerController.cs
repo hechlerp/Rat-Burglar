@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -8,8 +9,11 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     float speed = 1f;
 
-    Sprite[] upWalkSprites;
-    Sprite[] downWalkSprites;
+    Sprite[] player1UpWalkSprites;
+    Sprite[] player1DownWalkSprites;
+
+    Sprite[] player2UpWalkSprites;
+    Sprite[] player2DownWalkSprites;
 
     SpriteRenderer spriteRenderer;
 
@@ -88,6 +92,7 @@ public class PlayerController : MonoBehaviour {
             { PlayerAction.squeak, isPlayer1 ? KeyCode.H : KeyCode.Keypad0 },
         };
 
+        setPlayerSprites(isPlayer1 ? "Tubbs" : "Tibbs");
     }
 
     void FixedUpdate() {
@@ -115,11 +120,23 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    void setPlayerSprites(string playerName) {
+        string spritePath = "Sprites/" + playerName + "/";
+        player1UpWalkSprites = loadSprites(spritePath + "-Walking-Front-SS_");
+        player2UpWalkSprites = loadSprites(spritePath + "-Walking-Front-SS_");
+    }
+
+
+    Sprite[] loadSprites(string path) {
+        Sprite[] sprites = Resources.LoadAll<Sprite>(path);
+        return sprites;
+    }
+
     void updatePlayerSprite()
     {
-        Sprite[] walkSprites = currentFacingDir == FacingDir.up ? upWalkSprites : downWalkSprites;
-        if(currentFrame < walkSprites.Length)
-        {
+        Sprite[] walkSprites = isPlayer1 ? (currentFacingDir == FacingDir.up ? player1UpWalkSprites : player1DownWalkSprites)
+                                         : (currentFacingDir == FacingDir.up ? player2UpWalkSprites : player2DownWalkSprites);
+        if (currentFrame < walkSprites.Length) {
             spriteRenderer.sprite = walkSprites[currentFrame];
         }
     }
