@@ -68,6 +68,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     ParticleSystem squeakPS;
 
+    float currentSpeed;
+    float dragSlowFactor = .5f;
+
 
 
     void Awake() {
@@ -89,6 +92,7 @@ public class PlayerController : MonoBehaviour {
             { PlayerAction.grab, isPlayer1 ? KeyCode.G : KeyCode.Keypad1 },
             { PlayerAction.squeak, isPlayer1 ? KeyCode.H : KeyCode.Keypad0 },
         };
+        currentSpeed = speed;
 
         setPlayerSprites(isPlayer1 ? "Tubs" : "Tibs");
     }
@@ -153,7 +157,7 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKey(playerActionsToKeys[PlayerAction.moveLeft])) {
             movementDir.x -= 1;
         }
-        Vector3 movementVector = movementDir * speed * Time.fixedDeltaTime;
+        Vector3 movementVector = movementDir * currentSpeed * Time.fixedDeltaTime;
         if (movementDir.x != 0 && movementDir.y != 0) {
             movementVector /= rootTwo;
         }
@@ -238,6 +242,7 @@ public class PlayerController : MonoBehaviour {
         bestDraggable.startDrag();
         draggableTooltip.deactivate();
         dragDistance = playerCollider.radius + draggedItem.GetComponent<CircleCollider2D>().radius;
+        currentSpeed = speed * dragSlowFactor;
     }
 
     Draggable getTopDraggable() {
@@ -268,6 +273,7 @@ public class PlayerController : MonoBehaviour {
         draggedItem.endDrag();
         draggedItem = null;
         showTooltipIfNeeded();
+        currentSpeed = speed;
     }
 
     public void addPickupToRange(Draggable draggableObj) {
@@ -282,6 +288,7 @@ public class PlayerController : MonoBehaviour {
     public void dropIt() {
         draggedItem.endDrag();
         draggedItem = null;
+        currentSpeed = speed;
     }
 
     void showTooltipIfNeeded() {

@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 81763799475782564}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 20, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3421327939610558791}
@@ -71,10 +71,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 675023807
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 0.3280082, g: 0.8584906, b: 0.48403245, a: 1}
+  m_Sprite: {fileID: -86492194, guid: ec86b9df49f79b54f85140922294665d, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -134,6 +134,28 @@ MonoBehaviour:
   speed: 5
   panicDuration: 5
   panicSpeed: 2
+  walkFAnim:
+  - {fileID: -86492194, guid: ec86b9df49f79b54f85140922294665d, type: 3}
+  - {fileID: -1324997364, guid: ec86b9df49f79b54f85140922294665d, type: 3}
+  - {fileID: 2011633833, guid: ec86b9df49f79b54f85140922294665d, type: 3}
+  - {fileID: -1733577358, guid: ec86b9df49f79b54f85140922294665d, type: 3}
+  walkBAnim:
+  - {fileID: 1622413239, guid: 5ca3b6d1c52fe2148bf128cb528b8787, type: 3}
+  - {fileID: 581974141, guid: 5ca3b6d1c52fe2148bf128cb528b8787, type: 3}
+  - {fileID: -1769371878, guid: 5ca3b6d1c52fe2148bf128cb528b8787, type: 3}
+  - {fileID: 1949759140, guid: 5ca3b6d1c52fe2148bf128cb528b8787, type: 3}
+  walkLAnim:
+  - {fileID: 1620821925, guid: 395a1b58ae417174d8b866149f1dda80, type: 3}
+  - {fileID: -179516642, guid: 395a1b58ae417174d8b866149f1dda80, type: 3}
+  - {fileID: -1917659079, guid: 395a1b58ae417174d8b866149f1dda80, type: 3}
+  - {fileID: -266682310, guid: 395a1b58ae417174d8b866149f1dda80, type: 3}
+  walkRAnim:
+  - {fileID: 1746057781, guid: 4c8f1f546386ae840aae5f136c87a5e7, type: 3}
+  - {fileID: 466339867, guid: 4c8f1f546386ae840aae5f136c87a5e7, type: 3}
+  - {fileID: -882623523, guid: 4c8f1f546386ae840aae5f136c87a5e7, type: 3}
+  - {fileID: 835144238, guid: 4c8f1f546386ae840aae5f136c87a5e7, type: 3}
+  panicAnim: []
+  mainSprite: {fileID: 184049909443224380}
 --- !u!58 &6594146216759866327
 CircleCollider2D:
   m_ObjectHideFlags: 0

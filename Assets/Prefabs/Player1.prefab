@@ -5002,7 +5002,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ba651f833139846b3445061e5773dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
+  speed: 10
   draggableTooltip: {fileID: 0}
   HUDCanvas: {fileID: 0}
   isPlayer1: 1

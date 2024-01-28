@@ -9,12 +9,12 @@ public class Passenger : MonoBehaviour, IPoolableProp {
 
     public const string passengerPrefabName = "passenger";
     const int numXDests = 6;
-    const float destYMag = 30;
-    const float destNegYMag = -40;
+    const float destYMag = 61;
+    const float destNegYMag = -66;
 
     Vector3 currentDir;
 
-    float platformRaycastDist = 20f;
+    float platformRaycastDist = 60f;
     float immediateVicinityDist = .25f;
     int platformBarrierLayer;
     int barrierAndObstacleLayer;
@@ -42,6 +42,28 @@ public class Passenger : MonoBehaviour, IPoolableProp {
     Collider2D firstBarrier;
     bool hasReachedRequisiteX;
 
+    [SerializeField]
+    List<Sprite> walkFAnim;
+
+    [SerializeField]
+    List<Sprite> walkBAnim;
+
+    [SerializeField]
+    List<Sprite> walkLAnim;
+
+    [SerializeField]
+    List<Sprite> walkRAnim;
+
+    [SerializeField]
+    List<Sprite> panicAnim;
+
+    [SerializeField]
+    SpriteRenderer mainSprite;
+
+    float walkFrameChangeInterval = .25f;
+    float spriteChangeTimer = 0;
+    int spriteIndicator = 0;
+
     // Start is called before the first frame update
     void Awake() {
         platformBarrierLayer = LayerMask.GetMask("PersonBlocker");
@@ -66,6 +88,17 @@ public class Passenger : MonoBehaviour, IPoolableProp {
         }
     }
 
+    private void Update() {
+        spriteChangeTimer -= Time.fixedDeltaTime;
+        if (spriteChangeTimer <= 0) {
+            spriteIndicator++;
+            spriteChangeTimer = walkFrameChangeInterval;
+            if (spriteIndicator == 4) {
+                spriteIndicator = 0;
+            }
+        }
+    }
+
     public void activate(Dictionary<string, object> args) {
         isAvailable = false;
         gameObject.SetActive(true);
@@ -86,8 +119,6 @@ public class Passenger : MonoBehaviour, IPoolableProp {
             raycastTimer = 0;
             movingCoroutine = StartCoroutine(move());
             return;
-            //Debug.Log($"dest: {dest}");
-            //Debug.Log(hits[0].transform.name);
         }
         Debug.Log("didn't find platforms. Check destination calc function");
         deactivate();
@@ -106,6 +137,15 @@ public class Passenger : MonoBehaviour, IPoolableProp {
         hasReachedRequisiteX = false;
         Vector3 positionInitial = transform.position;
         while (dest.y > 0 ? transform.position.y < dest.y : transform.position.y > dest.y) {
+            if (currentDir.y > .5) {
+                mainSprite.sprite = walkBAnim[spriteIndicator];
+            } else if (currentDir.y < -.5) {
+                mainSprite.sprite = walkFAnim[spriteIndicator];
+            } else if (currentDir.x > .5) {
+                mainSprite.sprite = walkRAnim[spriteIndicator];
+            } else {
+                mainSprite.sprite = walkLAnim[spriteIndicator];
+            }
             // if panicking, run directly away, into the nearest wall and chill.
             if (isPanicking) {
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, currentDir, immediateVicinityDist, barrierAndObstacleLayer);
