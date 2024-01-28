@@ -44,6 +44,9 @@ TagManager:
   - name: Obstacle
     uniqueID: 4029256359
     locked: 0
+  - name: Subway
+    uniqueID: 575807969
+    locked: 0
   - name: Character
     uniqueID: 675023807
     locked: 0

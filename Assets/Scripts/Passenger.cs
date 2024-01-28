@@ -9,12 +9,12 @@ public class Passenger : MonoBehaviour, IPoolableProp {
 
     public const string passengerPrefabName = "passenger";
     const int numXDests = 6;
-    const float destYMag = 30;
-    const float destNegYMag = -40;
+    const float destYMag = 61;
+    const float destNegYMag = -66;
 
     Vector3 currentDir;
 
-    float platformRaycastDist = 20f;
+    float platformRaycastDist = 60f;
     float immediateVicinityDist = .25f;
     int platformBarrierLayer;
     int barrierAndObstacleLayer;
@@ -41,6 +41,21 @@ public class Passenger : MonoBehaviour, IPoolableProp {
     //bool hasGottenPastFirstBarrier;
     Collider2D firstBarrier;
     bool hasReachedRequisiteX;
+
+    [SerializeField]
+    List<Sprite> walkFAnim;
+
+    [SerializeField]
+    List<Sprite> walkBAnim;
+
+    [SerializeField]
+    List<Sprite> walkLAnim;
+
+    [SerializeField]
+    List<Sprite> walkRAnim;
+
+    [SerializeField]
+    List<Sprite> panicAnim;
 
     // Start is called before the first frame update
     void Awake() {
@@ -72,6 +87,7 @@ public class Passenger : MonoBehaviour, IPoolableProp {
         transform.position = (Vector3)args[spawnPosKey];
         currentDir = (Vector3)args[exitDirKey];
         enabled = true;
+        Debug.Log(currentDir.x);
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, currentDir, platformRaycastDist, platformBarrierLayer);
         if (hits.Length > 1) {
             firstBarrier = hits[0].collider;
