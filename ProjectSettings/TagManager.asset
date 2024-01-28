@@ -16,10 +16,10 @@ TagManager:
   - Character
   - Pickup
   - Subway
-  - 
-  - 
-  - 
-  - 
+  - Person
+  - RatBlocker
+  - PersonBlocker
+  - PersonHurtbox
   - 
   - 
   - 
@@ -46,6 +46,9 @@ TagManager:
     locked: 0
   - name: Character
     uniqueID: 675023807
+    locked: 0
+  - name: Particles
+    uniqueID: 2084014151
     locked: 0
   - name: WorldspaceUI
     uniqueID: 4087131529
