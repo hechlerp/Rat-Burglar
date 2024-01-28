@@ -28,6 +28,9 @@ public class Passenger : MonoBehaviour, IPoolableProp {
 
     float raycastTimer;
     const float raycastInterval = .25f;
+    bool isTravelingInBadDir;
+    //bool hasGottenPastFirstBarrier;
+    Collider2D firstBarrier;
 
     // Start is called before the first frame update
     void Awake() {
@@ -51,6 +54,7 @@ public class Passenger : MonoBehaviour, IPoolableProp {
         enabled = true;
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, currentDir, platformRaycastDist, platformBarrierLayer);
         if (hits.Length > 1) {
+            firstBarrier = hits[0].collider;
             float firstColWidth = ((BoxCollider2D)hits[0].collider).size.x / 2;
             float secondColWidth = ((BoxCollider2D)hits[1].collider).size.x / 2;
             float platformWidth = Vector3.Distance(hits[0].transform.position, hits[1].transform.position) - firstColWidth - secondColWidth;
@@ -80,12 +84,14 @@ public class Passenger : MonoBehaviour, IPoolableProp {
     IEnumerator move() {
         WaitForFixedUpdate fixedUpdateDelay = new WaitForFixedUpdate();
         bool hasReachedRequisiteX = false;
+        Vector3 positionInitial = transform.position;
         while (dest.y > 0 ? transform.position.y < dest.y : transform.position.y > dest.y) {
             if (!hasReachedRequisiteX) {
-                if (dest.x > 0 ? transform.position.x < dest.x : transform.position.x > dest.x) {
+                if (dest.x > positionInitial.x ? transform.position.x < dest.x : transform.position.x > dest.x) {
                     transform.position += currentDir * speed * Time.fixedDeltaTime;
                     RaycastHit2D hit = Physics2D.Raycast(transform.position, currentDir, immediateVicinityDist, barrierAndObstacleLayer);
-                    if (hit.collider != null) {
+                    // ignore the first barrier if it's our initial motion. We should get past that the first time to make it on to the platform.
+                    if (hit.collider != null && hit.collider != firstBarrier) {
                         hasReachedRequisiteX = true;
                         currentDir = getDestYDir();
                     }
@@ -95,20 +101,97 @@ public class Passenger : MonoBehaviour, IPoolableProp {
                     currentDir = getDestYDir();
                     yield return fixedUpdateDelay;
                 }
+                continue;
             }
             transform.position += currentDir * speed * Time.fixedDeltaTime;
             if (raycastTimer > raycastInterval) {
-                RaycastHit2D hit = Physics2D.Raycast(transform.position, currentDir, immediateVicinityDist, barrierAndObstacleLayer);
-                if (hit.collider != null) {
-                    if (currentDir == getDestYDir()) {
-
+                bool didChangeDir = false;
+                if (isTravelingInBadDir) {
+                    if (currentDir.y != 0) {
+                        didChangeDir = tryAndMoveInXDirection();
+                    } else {
+                        didChangeDir = tryAndMoveInYDirection();
+                    }
+                }
+                if (!didChangeDir) {
+                    RaycastHit2D hit = Physics2D.Raycast(transform.position, currentDir, immediateVicinityDist, barrierAndObstacleLayer);
+                    if (hit.collider != null) {
+                        findNextDirection();
                     }
                 }
 
             }
             yield return fixedUpdateDelay;
         }
+        deactivate();
+    }
 
+    void findNextDirection() {
+        isTravelingInBadDir = false;
+        Vector3 idealYDir = getDestYDir();
+        if (canTravelInDir(idealYDir)) {
+            currentDir = idealYDir;
+            return;
+
+        }
+        Vector3 idealXDir = getDestXDir();
+        if (idealXDir == Vector3.zero) {
+            Vector3 arbitraryX = getArbitraryXDir();
+            if (canTravelInDir(arbitraryX)) {
+                currentDir = arbitraryX;
+                isTravelingInBadDir = true;
+                return;
+            } else if (canTravelInDir(-arbitraryX)) {
+                currentDir = -arbitraryX;
+                isTravelingInBadDir = true;
+                return;
+            }
+        }
+        if (canTravelInDir(idealXDir)) {
+            currentDir = new Vector3(Mathf.Sign(idealXDir.x), 0, 0);
+            return;
+        } else if (canTravelInDir(getBadXDir(idealXDir))) {
+            currentDir = new Vector3(Mathf.Sign(getBadXDir(idealXDir).x), 0, 0);
+            isTravelingInBadDir = true;
+            return;
+        }
+        currentDir = getBadYDir(idealYDir);
+        isTravelingInBadDir = true;
+    }
+
+    bool tryAndMoveInXDirection() {
+        Vector3 idealXDir = getDestXDir();
+        if (idealXDir == Vector3.zero) {
+            Vector3 arbitraryX = getArbitraryXDir();
+            if (canTravelInDir(arbitraryX)) {
+                currentDir = arbitraryX;
+                isTravelingInBadDir = true;
+                return true;
+            } else if (canTravelInDir(-arbitraryX)) {
+                currentDir = -arbitraryX;
+                isTravelingInBadDir = true;
+                return true;
+            }
+        }
+        if (canTravelInDir(idealXDir)) {
+            currentDir = new Vector3(Mathf.Sign(idealXDir.x), 0, 0);
+            return true;
+        }
+        return false;
+    }
+
+    bool tryAndMoveInYDirection() {
+        Vector3 idealYDir = getDestYDir();
+        if (canTravelInDir(idealYDir)) {
+            currentDir = idealYDir;
+            return true;
+        }
+        return false;
+    }
+
+    bool canTravelInDir(Vector3 dir) {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, currentDir, immediateVicinityDist, barrierAndObstacleLayer);
+        return hit.collider == null;
     }
 
     Vector3 getDestYDir() {
@@ -116,13 +199,27 @@ public class Passenger : MonoBehaviour, IPoolableProp {
     }
 
     Vector3 getDestXDir() {
-        return new Vector3(0, dest.x, transform.position.x);
+        return new Vector3(dest.x - transform.position.x, 0);
+    }
+
+    Vector3 getBadYDir(Vector3 destYDir) {
+        return -destYDir;
+    }
+
+    Vector3 getBadXDir(Vector3 destXDir) {
+        return -destXDir;
+    }
+
+    Vector3 getArbitraryXDir() {
+        return Mathf.FloorToInt(Random.value * 2) == 0 ? Vector3.left : Vector3.right;
     }
 
     private void OnDrawGizmos() {
         if (Application.isPlaying) {
             Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(dest, 1);
+            Vector3 immediateVicinityPt = transform.position + (immediateVicinityDist * currentDir);
+            Gizmos.DrawSphere(immediateVicinityPt, 1);
+            Gizmos.DrawLine(transform.position, immediateVicinityPt);
             Gizmos.DrawLine(transform.position, dest);
         }
     }
