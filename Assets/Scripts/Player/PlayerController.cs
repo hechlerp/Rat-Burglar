@@ -20,8 +20,6 @@ public class PlayerController : MonoBehaviour {
 
     float frameTime = 0.1f;
     float timeElapsed = 0f;
-    
-    bool isWalking = false;
 
     List<Draggable> draggablesInRange;
 
@@ -70,14 +68,12 @@ public class PlayerController : MonoBehaviour {
 
     float currentSpeed;
     float dragSlowFactor = .5f;
-<<<<<<< HEAD
 
     [SerializeField]
     SpriteRenderer mainSprite;
-=======
+
     private bool isWalking;
 
->>>>>>> main
 
     void Awake() {
         draggablesInRange = new List<Draggable>();
@@ -111,7 +107,6 @@ public class PlayerController : MonoBehaviour {
     private void Update() {
         handleDragging();
         handleSqueak();
-<<<<<<< HEAD
         handleWalkAnimation();
     }
 
@@ -160,9 +155,7 @@ public class PlayerController : MonoBehaviour {
         if (currentFrame < walkSprites.Length) {
             mainSprite.sprite = walkSprites[currentFrame];
         }
-=======
         handleActionAudio();
->>>>>>> main
     }
 
 
