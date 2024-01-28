@@ -11,9 +11,13 @@ public class PlayerController : MonoBehaviour {
 
     Sprite[] player1UpWalkSprites;
     Sprite[] player1DownWalkSprites;
+    Sprite[] player1LeftWalkSprites;
+    Sprite[] player1RightWalkSprites;
 
-    Sprite[] player2UpWalkSprites;
-    Sprite[] player2DownWalkSprites;
+    Sprite[] player1UpDragSprites;
+    Sprite[] player1DownDragSprites;
+    Sprite[] player1LeftDragSprites;
+    Sprite[] player1RightDragSprites;
 
     int currentFrame = 0;
     int totalFrames = 4;
@@ -97,6 +101,7 @@ public class PlayerController : MonoBehaviour {
         currentSpeed = speed;
 
         setPlayerSprites();
+        setPlayerDragSprites();
     }
 
     void FixedUpdate() {
@@ -125,8 +130,20 @@ public class PlayerController : MonoBehaviour {
     }
 
     void setPlayerSprites() {
-        player1UpWalkSprites = loadSprites("Sprites/Tubs-Walking-Front");
-        player2UpWalkSprites = loadSprites("Sprites/Tibs-Walking-Front");
+        string name = isPlayer1 ? "Tibs" : "Tubs";
+        player1UpWalkSprites = loadSprites("Sprites/" + name + "-Walking-Front");
+        player1DownWalkSprites = loadSprites("Sprites/" + name + "-Walking-Back");
+        player1LeftWalkSprites = loadSprites("Sprites/" + name + "-Walking-Left");
+        player1RightWalkSprites = loadSprites("Sprites/" + name + "-Walking-Right");
+    }
+
+    void setPlayerDragSprites()
+    {
+        string name = isPlayer1 ? "Tibs" : "Tubs";
+        player1UpDragSprites = loadSprites("Sprites/" + name + "-Dragging-Front");
+        player1DownDragSprites = loadSprites("Sprites/" + name + "-Dragging-Back");
+        player1LeftDragSprites = loadSprites("Sprites/" + name + "-Dragging-Right");
+        player1RightDragSprites = loadSprites("Sprites/" + name + "-Dragging-Left");
     }
 
 
@@ -138,20 +155,23 @@ public class PlayerController : MonoBehaviour {
     void updatePlayerSprite()
     {
         Sprite[] walkSprites = new Sprite[totalFrames];
-        if (isPlayer1)
+       
+        if (currentFacingDir == FacingDir.up)
         {
-            if (currentFacingDir == FacingDir.up || currentFacingDir == FacingDir.up)
-            {
-                walkSprites = player1UpWalkSprites;
-            }
-                               
-        }else
-        {
-            if (currentFacingDir == FacingDir.up || currentFacingDir == FacingDir.up)
-            {
-                walkSprites = player2UpWalkSprites;
-            }
+            walkSprites = draggedItem == null ? player1UpDragSprites : player1UpWalkSprites;
         }
+        if (currentFacingDir == FacingDir.down) {
+            walkSprites = draggedItem == null ? player1DownDragSprites : player1DownWalkSprites;
+        }
+        if (currentFacingDir == FacingDir.left)
+        {
+            walkSprites = draggedItem == null ? player1LeftDragSprites : player1LeftWalkSprites;
+        }
+        if (currentFacingDir == FacingDir.right)
+        {
+            walkSprites = draggedItem == null ? player1RightDragSprites : player1RightWalkSprites;
+        }
+
         if (currentFrame < walkSprites.Length) {
             mainSprite.sprite = walkSprites[currentFrame];
         }
