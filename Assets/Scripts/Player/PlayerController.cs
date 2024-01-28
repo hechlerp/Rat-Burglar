@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour {
 
     float currentSpeed;
     float dragSlowFactor = .5f;
-
+    private bool isWalking;
 
 
     void Awake() {
@@ -89,11 +89,15 @@ public class PlayerController : MonoBehaviour {
     private void Update() {
         handleDragging();
         handleSqueak();
+        handleActionAudio();
     }
 
+
     void handleMovement() {
+        isWalking = false;
         Vector2 movementDir = new Vector3();
         if (Input.GetKey(playerActionsToKeys[PlayerAction.moveUp])) {
+            Debug.Log("up");
             movementDir.y += 1;
         }
         if (Input.GetKey(playerActionsToKeys[PlayerAction.moveDown])) {
@@ -123,8 +127,56 @@ public class PlayerController : MonoBehaviour {
                 }
                 draggedItem.transform.position = transform.position - dragOffset;
             }
+            // Play Walk Sound
+            isWalking = true;
+        } else {
+            isWalking = false;
         }
     }
+
+
+    void handleActionAudio() {
+
+        if (Input.GetKeyDown(playerActionsToKeys[PlayerAction.moveUp]) ||
+            Input.GetKeyDown(playerActionsToKeys[PlayerAction.moveDown]) ||
+            Input.GetKeyDown(playerActionsToKeys[PlayerAction.moveRight]) ||
+            Input.GetKeyDown(playerActionsToKeys[PlayerAction.moveLeft])) {
+            if (draggedItem) {
+                AudioManager.Instance.PlayRatDrag();
+            }
+            AudioManager.Instance.PlayRat1Walk();
+        } else {
+            //Debug.Log("Why");
+            // AudioManager.Instance.StopRat1Walk();
+            //AudioManager.Instance.StopRat1Walk();
+
+        }
+
+        //AudioManager.Instance.PlayRat1Walk(isPlayer1 && isWalking && draggedItem == null);
+        // AudioManager.Instance.PlayRat2Walk(!isPlayer1 && isWalking && draggedItem == null);
+        // AudioManager.Instance.PlayRatDrag(isWalking && draggedItem != null);
+
+        /*
+        if (isWalking)
+        {
+            if (draggedItem != null)
+            {
+                AudioManager.Instance.PlayRatDrag();
+                return;
+            }
+            if (isPlayer1)
+            {
+                AudioManager.Instance.PlayRat1Walk();
+            }
+            else
+            {
+                AudioManager.Instance.PlayRat2Walk();
+            }
+        }
+        */
+
+    }
+
 
     void handleSqueakCooldown() {
         if (squeakTimer > 0) {
@@ -178,6 +230,11 @@ public class PlayerController : MonoBehaviour {
         foreach (Collider2D col in passengerCols) {
             Passenger passenger = col.GetComponent<Passenger>();
             passenger.panic(transform.position);
+        }
+        if (isPlayer1) {
+            AudioManager.Instance.PlayRat1Squeak();
+        } else {
+            AudioManager.Instance.PlayRat2Squeak();
         }
     }
 

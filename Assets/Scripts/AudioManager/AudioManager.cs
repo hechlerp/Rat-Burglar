@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class AudioManager : MonoBehaviour
 {
+
     private string fmodBgmEvent = "event:/bgm";
-    private FMOD.Studio.EventInstance fmodBgm;
+    public FMOD.Studio.EventInstance fmodBgm;
 
     private string fmodAmbienceEvent = "event:/ambience";
     private FMOD.Studio.EventInstance fmodAmbience;
 
-    private string fmodRat1WalkEvent = "event:/rat1Walk";
+    private string fmodRat1WalkEvent = "event:/rat2Walk";
     private FMOD.Studio.EventInstance fmodRat1Walk;
 
     private string fmodRat2WalkEvent = "event:/rat2Walk";
@@ -31,6 +31,17 @@ public class AudioManager : MonoBehaviour
     private string fmodRatDeadEvent = "event:/ratDead";
     private FMOD.Studio.EventInstance fmodRatDead;
 
+    public GameObject walk1;
+    public GameObject walk2;
+    public GameObject drag;
+
+    private int countwalk1;
+    private bool test = false;
+    public bool stop = false;
+
+
+
+
 
     private static AudioManager instance;
     public static AudioManager Instance
@@ -43,24 +54,21 @@ public class AudioManager : MonoBehaviour
             }
             return instance;
         }
-
-
-        }
-    
-    void Awake()
-
-    {
-        if (instance != null && instance != this) {
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
-    // Update is called once per frame
 
-    public void PlaySound(FMOD.Studio.EventInstance i, string fmodevent) {
+    // Update is called once per frame
+    private void Start()
+    {
+        /*
+        fmodRat2Walk = FMODUnity.RuntimeManager.CreateInstance(fmodRat2WalkEvent);
+        fmodRatDrag = FMODUnity.RuntimeManager.CreateInstance(fmodRatDragEvent);
+        countwalk1 = 0;
+        */
+        stop = false;
+
+    }
+    private void PlaySound(FMOD.Studio.EventInstance i, string fmodevent) {
         if (i.isValid())
         {
             // Debug.Log("is valid");
@@ -69,6 +77,7 @@ public class AudioManager : MonoBehaviour
         {
             i = FMODUnity.RuntimeManager.CreateInstance(fmodevent);
             i.start();
+            i.release();
             // Debug.Log("change");
         }
     }
@@ -77,34 +86,81 @@ public class AudioManager : MonoBehaviour
         i.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         i.release();
     }
-    public void PlayBGM() {
-        PlaySound(fmodBgm, fmodBgmEvent);
-    }
 
+    public void PlayBGM() {
+        /*
+        FMODUnity.RuntimeManager.PlayOneShot(fmodBgmEvent);
+        PlaySound(fmodBgm, fmodBgmEvent);
+        */
+
+        fmodBgm= FMODUnity.RuntimeManager.CreateInstance(fmodBgmEvent);
+        fmodBgm.start();
+    }
+    public void StopBGM()
+    {
+        StopSound(fmodBgm);
+    }
     public void PlayAmbience()
     {
+
         PlaySound(fmodAmbience, fmodAmbienceEvent);
     }
 
     public void PlayRat1Walk()
     {
-        PlaySound(fmodRat1Walk, fmodRat1WalkEvent);
+        if (!stop) {
+            FMODUnity.RuntimeManager.PlayOneShot(fmodRat1WalkEvent);
+        }
+
+        /*
+        fmodRat1Walk = FMODUnity.RuntimeManager.CreateInstance(fmodRat2WalkEvent);
+        fmodRat1Walk.start();
+        */
+        /*
+        if (countwalk1 == 20)
+        {
+            countwalk1 = 0;
+        }
+        if (countwalk1 == 0)
+            FMODUnity.RuntimeManager.PlayOneShot(fmodRat1WalkEvent);
+        countwalk1++;
+        */
+        /*
+        if (check)
+        {
+            if (countwalk1 == 0)
+                Debug.Log("whats");
+            FMODUnity.RuntimeManager.PlayOneShot(fmodRat1WalkEvent);
+            if (countwalk1 == 100)
+            {
+                countwalk1 = 0;
+            }
+            countwalk1 += 1;
+            Debug.Log(countwalk1);
+
+
+        }
+                    */
     }
 
     public void StopRat1Walk()
     {
-        StopSound(fmodRat1Walk);
+        if (fmodRat1Walk.isValid()) {
+            fmodRat1Walk.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            fmodRat1Walk.release();
+        }
     }
 
-    public void PlayRat2Walk()
+    public void PlayRat2Walk(bool check)
     {
-        PlaySound(fmodRat2Walk, fmodRat2WalkEvent);
+        walk2.SetActive(check);
     }
-
+    /*
     public void StopRat2Walk()
     {
-        StopSound(fmodRat2Walk);
+        fmodRat2Walk.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
+    */
 
     public void PlayRat1Squeak()
     {
@@ -128,12 +184,15 @@ public class AudioManager : MonoBehaviour
 
     public void PlayRatDrag()
     {
-        PlaySound(fmodRatDrag, fmodRatDragEvent);
+        if (!stop)
+        {
+            FMODUnity.RuntimeManager.PlayOneShot(fmodRatDragEvent);
+        }
     }
 
-    public void StopDrag()
+    public void StopRatDrag()
     {
-        StopSound(fmodRatDrag);
+        fmodRatDrag.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
     public void PlayWin()
@@ -155,4 +214,5 @@ public class AudioManager : MonoBehaviour
     {
         StopSound(fmodRatDead);
     }
+
 }

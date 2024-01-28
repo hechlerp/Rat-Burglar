@@ -40,6 +40,9 @@ public class LevelManager : MonoBehaviour {
 
     Vector3 initialPizzaPos;
 
+    public GameObject WinPanel;
+    public GameObject LosePanel;
+
     void initialize() {
         if (isInitialized) {
             return;
@@ -61,6 +64,7 @@ public class LevelManager : MonoBehaviour {
 
     void Start() {
         initialize();
+        AudioManager.Instance.PlayAmbience();
     }
 
     void FixedUpdate() {
@@ -81,12 +85,17 @@ public class LevelManager : MonoBehaviour {
         instance.isRunning = false;
         instance.enabled = false;
         Debug.Log("players won!");
+        UImanager.Instance.ShowWin();
+        AudioManager.Instance.stop = true;
+
     }
 
     public static void loseGame() {
         instance.isRunning = false;
         instance.enabled = false;
         Debug.Log("players lost!");
+        UImanager.Instance.ShowLose();
+        AudioManager.Instance.stop = true;
     }
 
     public static void resetPlayersAndPizza() {
