@@ -61,6 +61,7 @@ public class LevelManager : MonoBehaviour {
 
     void Start() {
         initialize();
+        AudioManager.Instance.PlayAmbience();
     }
 
     void FixedUpdate() {
@@ -81,6 +82,7 @@ public class LevelManager : MonoBehaviour {
         instance.isRunning = false;
         instance.enabled = false;
         Debug.Log("players won!");
+
     }
 
     public static void loseGame() {
