@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour {
             { PlayerAction.squeak, isPlayer1 ? KeyCode.H : KeyCode.Keypad0 },
         };
 
-        setPlayerSprites(isPlayer1 ? "Tubbs" : "Tibbs");
+        setPlayerSprites(isPlayer1 ? "Tubs" : "Tibs");
     }
 
     void FixedUpdate() {
@@ -121,14 +121,23 @@ public class PlayerController : MonoBehaviour {
     }
 
     void setPlayerSprites(string playerName) {
-        string spritePath = "Sprites/" + playerName + "/";
-        player1UpWalkSprites = loadSprites(spritePath + "-Walking-Front-SS_");
-        player2UpWalkSprites = loadSprites(spritePath + "-Walking-Front-SS_");
+        player1UpWalkSprites = loadSprites("Sprites/" + playerName + "-Walking-Front");
+        player2UpWalkSprites = loadSprites("Sprites/" + playerName + "-Walking-Front");
     }
 
 
     Sprite[] loadSprites(string path) {
-        Sprite[] sprites = Resources.LoadAll<Sprite>(path);
+        // Sprite[] sprites = Resources.LoadAll<Sprite>(path);
+        Sprite[] sprites = new Sprite[totalFrames];
+        for (int i = 0; i < totalFrames; i++)
+        {
+            string formattedName = path + "-SS_" + i;
+            sprites[i] = Resources.Load<Sprite>(formattedName);
+            if (sprites[i] == null)
+            {
+                Debug.LogError("Sprite not found: " + formattedName);
+            }
+        }
         return sprites;
     }
 
