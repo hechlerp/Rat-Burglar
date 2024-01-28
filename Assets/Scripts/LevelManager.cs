@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour {
     static LevelManager manager;
@@ -29,11 +30,15 @@ public class LevelManager : MonoBehaviour {
     [SerializeField]
     float subwayInterval;
 
+    bool timerIsRunning;
+
     bool isRunning;
     bool isInitialized = false;
 
     List<PlayerController> players;
     List<Vector3> initialPlayerPositions;
+
+    Text timeText;
 
     [SerializeField]
     Pizza pizza;
@@ -47,6 +52,7 @@ public class LevelManager : MonoBehaviour {
         levelTimer = maxLevelTime;
         subwayTimer = subwayInterval;
         isRunning = true;
+        timerIsRunning = true;
         subwayManager.initialize(subwayInterval);
         GameObject[] playerGOs = GameObject.FindGameObjectsWithTag("Player");
         initialPlayerPositions = new List<Vector3>();
@@ -71,21 +77,43 @@ public class LevelManager : MonoBehaviour {
     }
 
     void decrementLevelTimer() {
-        levelTimer -= Time.fixedDeltaTime;
-        if (levelTimer <= 0) {
-            loseGame();
+        if (timerIsRunning)
+        {
+            if (levelTimer > 0)
+            {
+                levelTimer -= Time.fixedDeltaTime;
+                displayLevelTimer(levelTimer);
+            }
+            else
+            {
+                Debug.Log("Counted down to zero");
+                levelTimer = 0;
+                loseGame();
+            }
         }
+    }
+
+    void displayLevelTimer(float timeToDisplay)
+    {
+        timeToDisplay += 1;
+        float minutes = Mathf.FloorToInt(timeToDisplay / 60);
+        float seconds = Mathf.FloorToInt(timeToDisplay % 60);
+        timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
     public static void winGame() {
         instance.isRunning = false;
         instance.enabled = false;
+        instance.levelTimer = 0;
+        instance.timerIsRunning = false;
         Debug.Log("players won!");
     }
 
     public static void loseGame() {
         instance.isRunning = false;
         instance.enabled = false;
+        instance.levelTimer = 0;
+        instance.timerIsRunning = false;
         Debug.Log("players lost!");
     }
 
