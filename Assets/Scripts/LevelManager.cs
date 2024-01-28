@@ -84,7 +84,7 @@ public class LevelManager : MonoBehaviour {
     void decrementLevelTimer() {
         if (timerIsRunning)
         {
-            if (levelTimer > 0)
+            if (levelTimer >= 0)
             {
                 levelTimer -= Time.fixedDeltaTime;
                 int currentSeconds = Mathf.FloorToInt(levelTimer) % 60;
@@ -97,7 +97,6 @@ public class LevelManager : MonoBehaviour {
             else
             {
                 Debug.Log("Counted down to zero");
-                levelTimer = 0;
                 loseGame();
             }
         }
