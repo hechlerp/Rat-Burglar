@@ -27,10 +27,20 @@ public class Passenger : MonoBehaviour, IPoolableProp {
     Coroutine movingCoroutine;
 
     float raycastTimer;
+    float panicTimer;
+    bool isPanicking;
+
+    [SerializeField]
+    float panicDuration;
+
+    [SerializeField]
+    float panicSpeed;
+
     const float raycastInterval = .25f;
     bool isTravelingInBadDir;
     //bool hasGottenPastFirstBarrier;
     Collider2D firstBarrier;
+    bool hasReachedRequisiteX;
 
     // Start is called before the first frame update
     void Awake() {
@@ -40,10 +50,20 @@ public class Passenger : MonoBehaviour, IPoolableProp {
             "Obstacle"
         });
         raycastTimer = 0;
+        panicTimer = 0;
+        isPanicking = false;
+        hasReachedRequisiteX = false;
+
     }
 
     private void FixedUpdate() {
         raycastTimer += Time.fixedDeltaTime;
+        if (panicTimer > 0) {
+            panicTimer -= Time.fixedDeltaTime;
+            if (panicTimer <= 0) {
+                endPanic();
+            }
+        }
     }
 
     public void activate(Dictionary<string, object> args) {
@@ -83,9 +103,18 @@ public class Passenger : MonoBehaviour, IPoolableProp {
 
     IEnumerator move() {
         WaitForFixedUpdate fixedUpdateDelay = new WaitForFixedUpdate();
-        bool hasReachedRequisiteX = false;
+        hasReachedRequisiteX = false;
         Vector3 positionInitial = transform.position;
         while (dest.y > 0 ? transform.position.y < dest.y : transform.position.y > dest.y) {
+            // if panicking, run directly away, into the nearest wall and chill.
+            if (isPanicking) {
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, currentDir, immediateVicinityDist, barrierAndObstacleLayer);
+                if (hit.collider == null) {
+                    transform.position += currentDir * speed * Time.fixedDeltaTime * panicSpeed;
+                }
+                yield return fixedUpdateDelay;
+                continue;
+            }
             if (!hasReachedRequisiteX) {
                 if (dest.x > positionInitial.x ? transform.position.x < dest.x : transform.position.x > dest.x) {
                     transform.position += currentDir * speed * Time.fixedDeltaTime;
@@ -214,13 +243,27 @@ public class Passenger : MonoBehaviour, IPoolableProp {
         return Mathf.FloorToInt(Random.value * 2) == 0 ? Vector3.left : Vector3.right;
     }
 
-    private void OnDrawGizmos() {
-        if (Application.isPlaying) {
-            Gizmos.color = Color.blue;
-            Vector3 immediateVicinityPt = transform.position + (immediateVicinityDist * currentDir);
-            Gizmos.DrawSphere(immediateVicinityPt, 1);
-            Gizmos.DrawLine(transform.position, immediateVicinityPt);
-            Gizmos.DrawLine(transform.position, dest);
-        }
+    public void panic(Vector3 ratPos) {
+        // run in the opposite direction
+        currentDir = (transform.position - ratPos).normalized;
+        panicTimer = panicDuration;
+        isPanicking = true;
     }
+
+    // this seems to sometimes lead to shaking behavior and somewhat odd directions. Not sure why that is. Pretty rare bug tho.
+    void endPanic() {
+        isPanicking = false;
+        currentDir = !hasReachedRequisiteX ? new Vector3(Mathf.Sign(getDestXDir().x), 0, 0) : getDestYDir();
+    }
+
+    // Uncomment below for debugging destinations etc.
+    //private void OnDrawGizmos() {
+    //    if (Application.isPlaying) {
+    //        Gizmos.color = Color.blue;
+    //        Vector3 immediateVicinityPt = transform.position + (immediateVicinityDist * currentDir);
+    //        Gizmos.DrawSphere(immediateVicinityPt, 1);
+    //        Gizmos.DrawLine(transform.position, immediateVicinityPt);
+    //        Gizmos.DrawLine(transform.position, dest);
+    //    }
+    //}
 }

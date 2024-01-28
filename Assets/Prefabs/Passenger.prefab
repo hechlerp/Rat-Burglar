@@ -132,6 +132,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  panicDuration: 5
+  panicSpeed: 2
 --- !u!58 &6594146216759866327
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -145,9 +147,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.5}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1
 --- !u!1 &4024440681150805340
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,7 +160,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5655623886947553925}
   - component: {fileID: 2765724843487322258}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: PersonCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
