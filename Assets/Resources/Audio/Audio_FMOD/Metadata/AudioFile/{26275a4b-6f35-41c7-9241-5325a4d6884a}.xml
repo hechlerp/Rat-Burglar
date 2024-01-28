@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{26275a4b-6f35-41c7-9241-5325a4d6884a}">
+		<property name="assetPath">
+			<value>rat_noise1.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.72537414965986391</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{f6896236-e659-40e6-99b1-6f77fd8114b2}</destination>
+		</relationship>
+	</object>
+</objects>

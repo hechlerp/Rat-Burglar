@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{d5fcaf78-083c-4433-927e-048f4f029a7e}">
+		<property name="assetPath">
+			<value>46414__erh__asynth-30-bomb.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>5.8978684807256236</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{f6896236-e659-40e6-99b1-6f77fd8114b2}</destination>
+		</relationship>
+	</object>
+</objects>
