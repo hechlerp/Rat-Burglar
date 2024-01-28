@@ -13,6 +13,11 @@ public class mainMenuUIManager : MonoBehaviour
     }
     public void PressStart() {
         SceneManager.LoadScene(1);
+        AudioManager.Instance.fmodBgm.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        AudioManager.Instance.fmodBgm.release();
+
+        // AudioManager.Instance.StopBGM();
+
     }
 
 
@@ -25,4 +30,6 @@ public class mainMenuUIManager : MonoBehaviour
 #endif
 
     }
+
+    
 }
