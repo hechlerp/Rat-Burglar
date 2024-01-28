@@ -12,7 +12,7 @@ public class mainMenuUIManager : MonoBehaviour
         AudioManager.Instance.PlayBGM();
     }
     public void PressStart() {
-        // SceneManager.LoadScene();
+        SceneManager.LoadScene(1);
     }
 
 
