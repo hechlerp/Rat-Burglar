@@ -71,6 +71,9 @@ public class PlayerController : MonoBehaviour {
     float currentSpeed;
     float dragSlowFactor = .5f;
 
+    [SerializeField]
+    SpriteRenderer mainSprite;
+
     void Awake() {
         draggablesInRange = new List<Draggable>();
         currentFacingDir = FacingDir.down;
@@ -149,7 +152,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
         if (currentFrame < walkSprites.Length) {
-            GetComponent<SpriteRenderer>().sprite = walkSprites[currentFrame];
+            mainSprite.sprite = walkSprites[currentFrame];
         }
     }
 
