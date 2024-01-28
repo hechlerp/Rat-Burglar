@@ -8,6 +8,17 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     float speed = 1f;
 
+    Sprite[] upWalkSprites;
+    Sprite[] downWalkSprites;
+
+    int currentFrame = 0;
+    int totalFrames = 4;
+
+    float frameTime = 0.1f;
+    float timeElapsed = 0f;
+    
+    bool isWalking = false;
+
     List<Draggable> draggablesInRange;
 
     enum FacingDir {
@@ -85,6 +96,20 @@ public class PlayerController : MonoBehaviour {
     private void Update() {
         handleDragging();
         handleSqueak();
+        handleWalkAnimation();
+    }
+
+    void handleWalkAnimation()
+    {
+        if(isWalking)
+        {
+
+        }
+    }
+
+    void updatePlayerSprite()
+    {
+
     }
 
     void handleMovement() {
@@ -129,14 +154,6 @@ public class PlayerController : MonoBehaviour {
                 squeakTimer = 0;
             }
         }
-    }
-
-    Sprite getWalkingSprite()
-    {
-        // check if for Tibbs :
-        // walking - plain
-        if(isPlayer1)
-
     }
 
     FacingDir getCurrentDir(Vector3 movementDir) {
