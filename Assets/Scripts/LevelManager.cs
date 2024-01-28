@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class LevelManager : MonoBehaviour {
     static LevelManager manager;
@@ -30,6 +31,8 @@ public class LevelManager : MonoBehaviour {
     [SerializeField]
     float subwayInterval;
 
+    int lastDisplayedSeconds;
+
     bool timerIsRunning;
 
     bool isRunning;
@@ -38,7 +41,8 @@ public class LevelManager : MonoBehaviour {
     List<PlayerController> players;
     List<Vector3> initialPlayerPositions;
 
-    Text timeText;
+    [SerializeField]
+    TextMeshProUGUI timeText;
 
     [SerializeField]
     Pizza pizza;
@@ -53,6 +57,7 @@ public class LevelManager : MonoBehaviour {
         subwayTimer = subwayInterval;
         isRunning = true;
         timerIsRunning = true;
+        lastDisplayedSeconds = -1;
         subwayManager.initialize(subwayInterval);
         GameObject[] playerGOs = GameObject.FindGameObjectsWithTag("Player");
         initialPlayerPositions = new List<Vector3>();
@@ -82,7 +87,12 @@ public class LevelManager : MonoBehaviour {
             if (levelTimer > 0)
             {
                 levelTimer -= Time.fixedDeltaTime;
-                displayLevelTimer(levelTimer);
+                int currentSeconds = Mathf.FloorToInt(levelTimer) % 60;
+                if(currentSeconds != lastDisplayedSeconds)
+                {
+                    displayLevelTimer(levelTimer);
+                    lastDisplayedSeconds = currentSeconds;
+                }
             }
             else
             {
