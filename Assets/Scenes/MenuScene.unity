@@ -525,6 +525,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5655ad510cab8d246b65c1a0a26ddfdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walk1: {fileID: 0}
+  walk2: {fileID: 0}
+  drag: {fileID: 0}
 --- !u!1 &799056292
 GameObject:
   m_ObjectHideFlags: 0
