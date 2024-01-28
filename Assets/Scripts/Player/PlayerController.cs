@@ -131,6 +131,14 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    Sprite getWalkingSprite()
+    {
+        // check if for Tibbs :
+        // walking - plain
+        if(isPlayer1)
+
+    }
+
     FacingDir getCurrentDir(Vector3 movementDir) {
         if (
             (currentFacingDir == FacingDir.left && movementDir.x < 0) ||
