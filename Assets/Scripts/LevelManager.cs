@@ -84,7 +84,7 @@ public class LevelManager : MonoBehaviour {
     public static void winGame() {
         instance.isRunning = false;
         instance.enabled = false;
-        Debug.Log("players won!");
+        //Debug.Log("players won!");
         UImanager.Instance.ShowWin();
         AudioManager.Instance.stop = true;
 
@@ -93,7 +93,7 @@ public class LevelManager : MonoBehaviour {
     public static void loseGame() {
         instance.isRunning = false;
         instance.enabled = false;
-        Debug.Log("players lost!");
+        //Debug.Log("players lost!");
         UImanager.Instance.ShowLose();
         AudioManager.Instance.stop = true;
     }

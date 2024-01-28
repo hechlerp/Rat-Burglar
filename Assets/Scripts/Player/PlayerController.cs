@@ -97,7 +97,6 @@ public class PlayerController : MonoBehaviour {
         isWalking = false;
         Vector2 movementDir = new Vector3();
         if (Input.GetKey(playerActionsToKeys[PlayerAction.moveUp])) {
-            Debug.Log("up");
             movementDir.y += 1;
         }
         if (Input.GetKey(playerActionsToKeys[PlayerAction.moveDown])) {
