@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour {
     Sprite[] upWalkSprites;
     Sprite[] downWalkSprites;
 
+    SpriteRenderer spriteRenderer;
+
     int currentFrame = 0;
     int totalFrames = 4;
 
@@ -103,13 +105,23 @@ public class PlayerController : MonoBehaviour {
     {
         if(isWalking)
         {
-
+            timeElapsed += Time.deltaTime;
+            if(timeElapsed >= frameTime)
+            {
+                timeElapsed = 0f;
+                currentFrame = (currentFrame + 1) % totalFrames;
+                updatePlayerSprite();
+            }
         }
     }
 
     void updatePlayerSprite()
     {
-
+        Sprite[] walkSprites = currentFacingDir == FacingDir.up ? upWalkSprites : downWalkSprites;
+        if(currentFrame < walkSprites.Length)
+        {
+            spriteRenderer.sprite = walkSprites[currentFrame];
+        }
     }
 
     void handleMovement() {
