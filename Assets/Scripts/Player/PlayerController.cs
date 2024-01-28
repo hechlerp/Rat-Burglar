@@ -126,15 +126,6 @@ public class PlayerController : MonoBehaviour {
 
     Sprite[] loadSprites(string path) {
         Sprite[] sprites = Resources.LoadAll<Sprite>(path + "-SS");
-        for (int i = 0; i < totalFrames; i++)
-        {
-            string formattedName = path + "-SS_" + i;
-            sprites[i] = Resources.Load<Sprite>(formattedName);
-            if (sprites[i] == null)
-            {
-                Debug.LogError("Sprite not found: " + formattedName);
-            }
-        }
         return sprites;
     }
 
