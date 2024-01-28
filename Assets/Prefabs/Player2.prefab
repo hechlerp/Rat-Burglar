@@ -55,6 +55,7 @@ MonoBehaviour:
   squeakRadius: 5
   squeakCooldown: 2
   squeakPS: {fileID: 129814345885501896}
+  mainSprite: {fileID: 3668402727693782134}
 --- !u!50 &7931383954791906839
 Rigidbody2D:
   serializedVersion: 4
@@ -4930,7 +4931,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 2084014151
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -5033,7 +5034,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 675023807
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 176819242, guid: 8bbd0fe80b91ee34181c0aa1610a4009, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
