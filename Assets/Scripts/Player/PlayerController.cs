@@ -15,8 +15,6 @@ public class PlayerController : MonoBehaviour {
     Sprite[] player2UpWalkSprites;
     Sprite[] player2DownWalkSprites;
 
-    SpriteRenderer spriteRenderer;
-
     int currentFrame = 0;
     int totalFrames = 4;
 
@@ -127,7 +125,6 @@ public class PlayerController : MonoBehaviour {
 
 
     Sprite[] loadSprites(string path) {
-        // Sprite[] sprites = Resources.LoadAll<Sprite>(path);
         Sprite[] sprites = new Sprite[totalFrames];
         for (int i = 0; i < totalFrames; i++)
         {
@@ -146,7 +143,7 @@ public class PlayerController : MonoBehaviour {
         Sprite[] walkSprites = isPlayer1 ? (currentFacingDir == FacingDir.up ? player1UpWalkSprites : player1DownWalkSprites)
                                          : (currentFacingDir == FacingDir.up ? player2UpWalkSprites : player2DownWalkSprites);
         if (currentFrame < walkSprites.Length) {
-            spriteRenderer.sprite = walkSprites[currentFrame];
+            GetComponent<SpriteRenderer>().sprite = walkSprites[currentFrame];
         }
     }
 
