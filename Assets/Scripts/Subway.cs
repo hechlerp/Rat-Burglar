@@ -32,6 +32,9 @@ public class Subway : MonoBehaviour, IPoolableProp {
     [SerializeField]
     List<Vector3> localSpawnPositions;
 
+    [SerializeField]
+    float dismebarkYVariance;
+
     void Awake() {
         movementCoroutine = null;
         movementCompleteCallback = null;
@@ -104,6 +107,7 @@ public class Subway : MonoBehaviour, IPoolableProp {
     void spawnPassenger() {
         int spawnIdx = UnityEngine.Random.Range(0, localSpawnPositions.Count);
         Vector3 spawnPos = transform.TransformPoint(localSpawnPositions[spawnIdx]);
+        spawnPos.y += (UnityEngine.Random.value * dismebarkYVariance) - (dismebarkYVariance / 2);
         IPoolableProp spawnedPassenger = PropObjectPool.getFirstAvailableProp(Passenger.passengerPrefabName);
         spawnedPassenger.activate(new Dictionary<string, object>() {
             { Passenger.spawnPosKey, spawnPos },

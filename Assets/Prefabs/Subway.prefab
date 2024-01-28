@@ -172,6 +172,7 @@ MonoBehaviour:
   - {x: 0, y: 8, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: -8, z: 0}
+  dismebarkYVariance: 3
 --- !u!1 &6218504389096977526
 GameObject:
   m_ObjectHideFlags: 0
