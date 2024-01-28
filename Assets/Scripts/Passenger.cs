@@ -57,6 +57,13 @@ public class Passenger : MonoBehaviour, IPoolableProp {
     [SerializeField]
     List<Sprite> panicAnim;
 
+    [SerializeField]
+    SpriteRenderer mainSprite;
+
+    float walkFrameChangeInterval = .25f;
+    float spriteChangeTimer = 0;
+    int spriteIndicator = 0;
+
     // Start is called before the first frame update
     void Awake() {
         platformBarrierLayer = LayerMask.GetMask("PersonBlocker");
@@ -81,13 +88,23 @@ public class Passenger : MonoBehaviour, IPoolableProp {
         }
     }
 
+    private void Update() {
+        spriteChangeTimer -= Time.fixedDeltaTime;
+        if (spriteChangeTimer <= 0) {
+            spriteIndicator++;
+            spriteChangeTimer = walkFrameChangeInterval;
+            if (spriteIndicator == 4) {
+                spriteIndicator = 0;
+            }
+        }
+    }
+
     public void activate(Dictionary<string, object> args) {
         isAvailable = false;
         gameObject.SetActive(true);
         transform.position = (Vector3)args[spawnPosKey];
         currentDir = (Vector3)args[exitDirKey];
         enabled = true;
-        Debug.Log(currentDir.x);
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, currentDir, platformRaycastDist, platformBarrierLayer);
         if (hits.Length > 1) {
             firstBarrier = hits[0].collider;
@@ -102,8 +119,6 @@ public class Passenger : MonoBehaviour, IPoolableProp {
             raycastTimer = 0;
             movingCoroutine = StartCoroutine(move());
             return;
-            //Debug.Log($"dest: {dest}");
-            //Debug.Log(hits[0].transform.name);
         }
         Debug.Log("didn't find platforms. Check destination calc function");
         deactivate();
@@ -122,6 +137,15 @@ public class Passenger : MonoBehaviour, IPoolableProp {
         hasReachedRequisiteX = false;
         Vector3 positionInitial = transform.position;
         while (dest.y > 0 ? transform.position.y < dest.y : transform.position.y > dest.y) {
+            if (currentDir.y > .5) {
+                mainSprite.sprite = walkBAnim[spriteIndicator];
+            } else if (currentDir.y < -.5) {
+                mainSprite.sprite = walkFAnim[spriteIndicator];
+            } else if (currentDir.x > .5) {
+                mainSprite.sprite = walkRAnim[spriteIndicator];
+            } else {
+                mainSprite.sprite = walkLAnim[spriteIndicator];
+            }
             // if panicking, run directly away, into the nearest wall and chill.
             if (isPanicking) {
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, currentDir, immediateVicinityDist, barrierAndObstacleLayer);
