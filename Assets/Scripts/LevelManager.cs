@@ -94,9 +94,14 @@ public class LevelManager : MonoBehaviour {
             instance.players[i].transform.position = instance.initialPlayerPositions[i];
         }
         instance.pizza.transform.position = instance.initialPizzaPos;
+        toggleSubwayWeights(false);
     }
 
     public static List<PlayerController> getPlayers() {
         return instance.players;
+    }
+
+    public static void toggleSubwayWeights(bool shouldActivateExpress) {
+        instance.subwayManager.toggleThresholdWeighting(shouldActivateExpress);
     }
 }

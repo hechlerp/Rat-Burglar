@@ -10,6 +10,9 @@ public class SubwayManager : MonoBehaviour {
         public int idx;
         public Vector3 pos;
         public Vector3 dir;
+        public float selectionWeight;
+        public GameObject rails;
+        public bool isExpress;
         public bool isAvailable { get; set; }
     }
 
@@ -30,6 +33,17 @@ public class SubwayManager : MonoBehaviour {
 
     [SerializeField]
     List<Vector3> trackDirs;
+
+    [SerializeField]
+    List<float> baseTrackWeights;
+
+    [SerializeField]
+    List<float> thresholdWeights;
+
+    [SerializeField]
+    List<GameObject> rails;
+
+    const int expressTrackIdx = 3;
 
     List<Track> tracks;
 
@@ -54,7 +68,10 @@ public class SubwayManager : MonoBehaviour {
                 idx = i,
                 dir = trackDirs[i],
                 pos = trackPositions[i],
-                isAvailable = true
+                selectionWeight = baseTrackWeights[i],
+                isAvailable = true,
+                isExpress = i == expressTrackIdx,
+                rails = rails[i]
             });
         }
     }
@@ -77,7 +94,24 @@ public class SubwayManager : MonoBehaviour {
         if (availableTracks.Count == 0) {
             return;
         }
-        int trackIdx = UnityEngine.Random.Range(0, availableTracks.Count);
+        List<float> adjustedWeights = availableTracks.Select(track => {
+            return track.selectionWeight * (tracks.Count / availableTracks.Count);
+        }).ToList();
+        float randomVal = UnityEngine.Random.value;
+
+        int trackIdx = -1;
+        float weightTotal = 0;
+        Debug.Log(randomVal);
+        for (int i = 0; i < adjustedWeights.Count; i++) {
+            weightTotal += adjustedWeights[i];
+            Debug.Log(weightTotal);
+            Debug.Log(randomVal <= weightTotal);
+            if (randomVal <= weightTotal) {
+                trackIdx = i;
+                break;
+            }
+        }
+        Debug.Log(trackIdx);
         int trackIdxToUse = availableTracks[trackIdx].idx;
         Track track = tracks[trackIdxToUse];
         track.isAvailable = false;
@@ -95,6 +129,12 @@ public class SubwayManager : MonoBehaviour {
     void onMovementComplete(int trackIdx) {
         Track track = tracks[trackIdx];
         track.isAvailable = true;
+    }
+
+    public void toggleThresholdWeighting(bool shouldActivateExpress) {
+        for (int i = 0; i < tracks.Count; i++) {
+            tracks[i].selectionWeight = shouldActivateExpress ? thresholdWeights[i] : baseTrackWeights[i];
+        }
     }
 
 }

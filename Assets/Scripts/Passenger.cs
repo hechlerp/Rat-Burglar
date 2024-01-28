@@ -42,6 +42,21 @@ public class Passenger : MonoBehaviour, IPoolableProp {
     Collider2D firstBarrier;
     bool hasReachedRequisiteX;
 
+    [SerializeField]
+    List<Sprite> walkFAnim;
+
+    [SerializeField]
+    List<Sprite> walkBAnim;
+
+    [SerializeField]
+    List<Sprite> walkLAnim;
+
+    [SerializeField]
+    List<Sprite> walkRAnim;
+
+    [SerializeField]
+    List<Sprite> panicAnim;
+
     // Start is called before the first frame update
     void Awake() {
         platformBarrierLayer = LayerMask.GetMask("PersonBlocker");

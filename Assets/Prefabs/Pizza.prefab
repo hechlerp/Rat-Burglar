@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25a9d3ae040f6ff459b9f5bf6c8df173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPizza: 0
+  isPizza: 1
 --- !u!58 &1020706657002226489
 CircleCollider2D:
   m_ObjectHideFlags: 0
