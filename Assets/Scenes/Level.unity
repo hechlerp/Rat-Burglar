@@ -1286,6 +1286,7 @@ MonoBehaviour:
   baseTrackWeights: []
   thresholdWeights: []
   rails: []
+  currentWeights: []
 --- !u!4 &404120188
 Transform:
   m_ObjectHideFlags: 0
@@ -1819,6 +1820,7 @@ MonoBehaviour:
   - {fileID: 1593900141}
   - {fileID: 228597178}
   - {fileID: 703462188}
+  currentWeights: []
 --- !u!4 &600737847
 Transform:
   m_ObjectHideFlags: 0
@@ -2066,7 +2068,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1700749977955056853, guid: 281facda48c6f0c4c80d512642e35ab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -83.50001
+      value: 58
       objectReference: {fileID: 0}
     - target: {fileID: 1700749977955056853, guid: 281facda48c6f0c4c80d512642e35ab7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4220,7 +4222,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 637597167477453198, guid: 53adfb77246b2f049b8cea71771e6b2a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -48.4
+      value: -49
       objectReference: {fileID: 0}
     - target: {fileID: 637597167477453198, guid: 53adfb77246b2f049b8cea71771e6b2a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4863,11 +4865,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 637597167477453198, guid: 53adfb77246b2f049b8cea71771e6b2a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.1
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 637597167477453198, guid: 53adfb77246b2f049b8cea71771e6b2a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -49.3
+      value: -49
       objectReference: {fileID: 0}
     - target: {fileID: 637597167477453198, guid: 53adfb77246b2f049b8cea71771e6b2a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4902,6 +4904,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 637597167477453199, guid: 53adfb77246b2f049b8cea71771e6b2a, type: 3}
+      propertyPath: shouldActivateExpress
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8358338445493493056, guid: 53adfb77246b2f049b8cea71771e6b2a, type: 3}
       propertyPath: shouldActivateExpress
       value: 1
       objectReference: {fileID: 0}
@@ -5808,18 +5814,6 @@ PrefabInstance:
     - target: {fileID: 8092036530407400181, guid: 065d47ecda5c0d046bb8bc45fcc8da85, type: 3}
       propertyPath: m_Name
       value: Player1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8720067565580968060, guid: 065d47ecda5c0d046bb8bc45fcc8da85, type: 3}
-      propertyPath: m_Color.b
-      value: 0.17590779
-      objectReference: {fileID: 0}
-    - target: {fileID: 8720067565580968060, guid: 065d47ecda5c0d046bb8bc45fcc8da85, type: 3}
-      propertyPath: m_Color.g
-      value: 0.41299683
-      objectReference: {fileID: 0}
-    - target: {fileID: 8720067565580968060, guid: 065d47ecda5c0d046bb8bc45fcc8da85, type: 3}
-      propertyPath: m_Color.r
-      value: 0.5566038
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 065d47ecda5c0d046bb8bc45fcc8da85, type: 3}

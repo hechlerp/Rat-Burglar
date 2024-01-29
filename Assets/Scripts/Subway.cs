@@ -92,6 +92,7 @@ public class Subway : MonoBehaviour, IPoolableProp {
                 transform.position += dir * vInitial * Time.fixedDeltaTime;
                 yield return fixedUpdateDelay;
             }
+            deactivate();
             yield break;
         }
         float totalMovementTime = offsetMagnitude / (vInitial / 2);

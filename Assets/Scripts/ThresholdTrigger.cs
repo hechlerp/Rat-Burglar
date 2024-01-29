@@ -5,11 +5,8 @@ public class ThresholdTrigger : MonoBehaviour {
     bool shouldActivateExpress;
 
     private void OnTriggerEnter2D(Collider2D other) {
-        Draggable draggable = other.GetComponent<Draggable>();
-        if (draggable != null) {
-            if (draggable.isPizza) {
-                LevelManager.toggleSubwayWeights(shouldActivateExpress);
-            }
+        if (other.gameObject.CompareTag("Player")) {
+            LevelManager.toggleSubwayWeights(shouldActivateExpress);
         }
     }
 }

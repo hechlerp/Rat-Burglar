@@ -43,6 +43,8 @@ public class SubwayManager : MonoBehaviour {
     [SerializeField]
     List<GameObject> rails;
 
+    public float[] currentWeights;
+
     const int expressTrackIdx = 3;
 
     List<Track> tracks;
@@ -74,6 +76,12 @@ public class SubwayManager : MonoBehaviour {
                 rails = rails[i]
             });
         }
+        currentWeights = new float[4] {
+            tracks[0].selectionWeight,
+            tracks[1].selectionWeight,
+            tracks[2].selectionWeight,
+            tracks[3].selectionWeight,
+        };
     }
 
     private void FixedUpdate() {
@@ -104,7 +112,6 @@ public class SubwayManager : MonoBehaviour {
             return track.selectionWeight / totalWeighting;
         }).ToList();
         float randomVal = UnityEngine.Random.value;
-
         int trackIdx = 0;
         float weightTotal = 0;
         for (int i = 0; i < adjustedWeights.Count; i++) {
@@ -137,6 +144,7 @@ public class SubwayManager : MonoBehaviour {
     public void toggleThresholdWeighting(bool shouldActivateExpress) {
         for (int i = 0; i < tracks.Count; i++) {
             tracks[i].selectionWeight = shouldActivateExpress ? thresholdWeights[i] : baseTrackWeights[i];
+            currentWeights[i] = tracks[i].selectionWeight;
         }
     }
 
